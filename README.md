@@ -1,7 +1,6 @@
 # EKS Terraform Setup
 
 This project includes Terraform configuration to set up an Amazon EKS cluster on AWS.
- <img width="1138" alt="Architectural diagram 1" src="https://github.com/Funabowale/grayl_project/assets/140447545/34d2dfce-867d-4b84-a6d4-a855256064fa>
 
 ## Prerequisites
 
