@@ -9,6 +9,7 @@ This project includes Terraform configuration to set up an Amazon EKS cluster on
 3. Docker installed on your local machine.
 4. A Docker repository set up to store the Docker image.
 
+
 ## Setting Up the EKS Cluster
 
 1. Navigate to the `eks-terraform` directory.
@@ -31,11 +32,11 @@ Build the Docker image using the following command:
 docker build -t image-name .   
 ```
 
-Tag the Docker image with your Docker repository URI and push it:
+Tag the Docker image with your Docker repository and push it:
 
 ```bash
 docker tag image-name repo/image-name
-docker push  funadunrepo/image-name
+docker push repo/image-name
 ```
 
 ## Deploying the Nginx App to EKS
@@ -62,3 +63,7 @@ to find the external IP address (or DNS name) of the LoadBalancer service associ
 
 Access the Nginx app using the external IP address (or DNS name) and port as follows: xxxxx:port
 
+## Monitoring of EKS cluster and pods
+Use helm repository to install Prometheus and Grafana
+Note:you can follow this guide to setup your Prometheus and Grafana
+(https://catalog.workshops.aws/running-batch-on-eks/en-US/exercises/calculate-pi/setup-prometheus-grafana)
