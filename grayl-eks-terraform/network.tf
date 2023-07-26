@@ -13,7 +13,7 @@ resource "aws_vpc" "graylog" {
 resource "aws_subnet" "public" {
   count = var.availability_zones_count
 
-  vpc_id            = aws_vpc.graylog
+  vpc_id            = aws_vpc.graylog.id
   cidr_block        = cidrsubnet(var.vpc_cidr, var.subnet_cidr_bits, count.index)
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
@@ -23,9 +23,21 @@ resource "aws_subnet" "public" {
 
   map_public_ip_on_launch = true
 }
+# Private Subnets
+resource "aws_subnet" "private" {
+  count = var.availability_zones_count
+
+  vpc_id            = aws_vpc.graylog.id
+  cidr_block        = cidrsubnet(var.vpc_cidr, var.subnet_cidr_bits, count.index + var.availability_zones_count)
+  availability_zone = data.aws_availability_zones.available.names[count.index]
+
+  tags = {
+    Name                                           = "${var.project}-private-sg"
+  }
+}
 # Internet Gateway to provide internet access for services within VPC.
 resource "aws_internet_gateway" "graylog" {
-  vpc_id = aws_vpc.graylog
+  vpc_id = aws_vpc.graylog.id
 
   tags = {
     "Name" = "${var.project}-igw"
@@ -37,7 +49,7 @@ resource "aws_internet_gateway" "graylog" {
 # Route Table(s)
 # Route the public subnet traffic through the IGW
 resource "aws_route_table" "main" {
-  vpc_id = aws_vpc.graylog
+  vpc_id = aws_vpc.graylog.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -78,16 +90,16 @@ resource "aws_nat_gateway" "main" {
 
 # Add route to route table
 resource "aws_route" "main" {
-  route_table_id         = aws_vpc.graylog
+  route_table_id         = aws_vpc.graylog.default_route_table_id
   nat_gateway_id         = aws_nat_gateway.main.id
   destination_cidr_block = "0.0.0.0/0"
 }
 
+
 # Security group for public subnet
 resource "aws_security_group" "public_sg" {
   name   =  "${var.project}-Public-sg"
-  vpc_id = aws_vpc.graylogg
-
+  vpc_id = aws_vpc.graylog.id
   tags = {
     Name = "${var.project}-Public-sg"
   }
@@ -124,7 +136,7 @@ resource "aws_security_group_rule" "sg_egress_public" {
 # Security group for data plane
 resource "aws_security_group" "data_plane_sg" {
   name   =  "${var.project}-Worker-sg"
-  vpc_id = aws_vpc.graylog
+  vpc_id = aws_vpc.graylog.id
 
   tags = {
     Name = "${var.project}-Worker-sg"
@@ -164,7 +176,7 @@ resource "aws_security_group_rule" "node_outbound" {
 # Security group for control plane
 resource "aws_security_group" "control_plane_sg" {
   name   = "${var.project}-ControlPlane-sg"
-  vpc_id = aws_vpc.graylog
+  vpc_id = aws_vpc.graylog.id
 
   tags = {
     Name = "${var.project}-ControlPlane-sg"
