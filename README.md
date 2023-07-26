@@ -4,6 +4,9 @@ This project is to deploy a simple application using kubernetes.
 
 # Architectural Diagram
 
+![Architectural diagram 1](https://github.com/Funabowale/grayl_project/assets/140447545/10b55f4d-b4af-44b6-960d-1dbeacab58ce)
+
+![Architectural diagram 2](https://github.com/Funabowale/grayl_project/assets/140447545/3dfd0b79-b5de-4e0c-89d3-c4e3b77790ec)
 
 # EKS Terraform Setup
 
