@@ -17,6 +17,12 @@ spec:
       containers:
       - name: nginx-pod
         image: funadun/funimage:latest
+        livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 4
+            periodSeconds: 2
 ---
 
 apiVersion: v1
